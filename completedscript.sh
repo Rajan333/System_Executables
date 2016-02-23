@@ -14,13 +14,6 @@ if [ "$AMIROOT" != "root" ]; then
 	read -p 'Press Enter to Finish' FILEPATHOPTION
 	exit
 fi
-}
-
-gparted()
-
-{
-
-main_fun
 
 # show available SD card and select which to use
 cat <<EOM
@@ -40,10 +33,14 @@ while [ $ENTERCORRECTLY -ne 1 ]
 do
 args= "$@"
   read -p 'Enter Device Number #: ' args
-#echo "$args"
+}
+
+gparted()
+
+{
+main_fun
 
 for i in $args  
-#echo " "  
 do
 echo $i
 
@@ -126,10 +123,9 @@ while [ $ENTERCORRECTLY -ne 1 ]
 do
 #args= "$@"
   read -p 'Enter Device Number #: ' args
-#echo "$args"
 
 for i in $args  
-#echo " "  
+
 do
 echo $i
 
@@ -204,19 +200,10 @@ sudo mount -t ext4 ${DRIVE}3 $PATH_TO_SDCONTENTFS/
 +------------------------------------------------------------------------------+
 EOM
 
-#untar_progress $START_DIR/boot.tar.gz $PATH_TO_SDBOOT/
-#untar_progress $START_DIR/root.tar.gz $PATH_TO_SDROOTFS/
-#untar_progress $START_DIR/$content_tar $PATH_TO_SDCONTENTFS/
-#echo "START_DIR : " $START_DIR
-#echo $content_tar
-
-#echo $START_DIR/boot.tar.gz
-
 tar zxf $START_DIR/boot.tar.gz -C $PATH_TO_SDBOOTFS &  
 tar zxf $START_DIR/root.tar.gz -C $PATH_TO_SDROOTFS &
 tar zxf $START_DIR/$content_tar -C $PATH_TO_SDCONTENTFS & 
  
-
 sync
 
 cat <<EOM
@@ -244,6 +231,7 @@ echo "Operation Finished"
 
 full_erase_and_copy()
 {
+  
  gparted
  cardcopy
  
@@ -271,16 +259,20 @@ if [ $ELEMENTS == "1" ];then
 elif [ $ELEMENTS == "3" ];then
 
   if [ ${args[0]} == "gparted" ]; then
-     gparted $DRIVE 
+     gparted $DRIVE & 
+     wait
   elif [ ${args[0]} == "cardcopy" ]; then
 	CONTENT_TYPE=$2
 	CONTENT_VERSION=$3     
-	cardcopy $DRIVE $CONTENT_TYPE $CONTENT_VERSION 
+	cardcopy $DRIVE $CONTENT_TYPE $CONTENT_VERSION & 
+    wait
   elif [ ${args[0]} == "full_erase_and_copy" ]; then
 	  CONTENT_TYPE=$2
-	CONTENT_VERSION=$3     
-     full_erase_and_copy $DRIVE $CONTENT_TYPE $CONTENT_VERSION
-  fi
+      CONTENT_VERSION=$3     
+     full_erase_and_copy $DRIVE $CONTENT_TYPE $CONTENT_VERSION &
+     wait
+    
+    fi
 	
 
   if [ ${args[1]} == "north" ]
@@ -316,11 +308,14 @@ elif [ $ELEMENTS == 0 ]; then
 
         #esac
 	if [ $val == "gparted" ];then
-		gparted $DRIVE
+		gparted $DRIVE &
+    wait
 	elif [ $val == "cardcopy"];then
 		cardcopy $DRIVE $CONTENT_TYPE $CONTENT_VERSION
-	else  gparted $DRIVE
-	      cardcopy $DRIVE $CONTENT_TYPE $CONTENT_VERSION
+    wait
+	else  gparted $DRIVE &
+	      cardcopy $DRIVE $CONTENT_TYPE $CONTENT_VERSION &
+        wait
 	fi 	
 fi
 

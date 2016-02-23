@@ -1,5 +1,5 @@
 sudo apt-get update
-sudo apt-get upgarde
+sudo apt-get upgrade
 sudo apt-get install nodejs -y
 
 sudo ln -s /usr/bin/node.js /bin/node

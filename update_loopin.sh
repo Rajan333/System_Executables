@@ -18,6 +18,6 @@ sudo mv $LOOPIN_DOWNLOAD/temp-loopin.json $LOOPIN_LOCATION/loopin.json
 
 else
 
-echo "Not a target version..."
+echo "Not at target version..."
 
 fi
