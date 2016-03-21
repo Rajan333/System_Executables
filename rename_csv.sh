@@ -10,7 +10,7 @@ do
     RENAMED=`echo ${line//,/ } | awk '{print $2}' | tr '\r' ' '`
 
     echo $ORIGINAL is renamed as $RENAMED
-    mv $ORIGINAL $RENAMED
+    #mv $ORIGINAL $RENAMED
     sleep 1
 
 done

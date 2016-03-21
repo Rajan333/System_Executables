@@ -31,7 +31,7 @@ create_volume()
     list_instances
 
     # CREATE A VOLUME 
-    # aws ec2 create-volume --size $SIZE --region $REGION --availability-zone $AZ --volume-type gp2 > ~/vol.json
+     aws ec2 create-volume --size $SIZE --region $REGION --availability-zone $AZ --volume-type gp2 > ~/vol.json
     VOLUME_ID=`echo $(jq -r '.VolumeId' ~/vol.json)`
     echo "vol_id: " $VOLUME_ID
 }
@@ -51,8 +51,8 @@ delete_volume()
     read del_option
     VOL_ID=`cat ~/del_vol.txt | sed -n "$del_option"p | awk '{print $3}'`
     echo $VOL_ID
-    exit
-#    aws ec2 delete-volume --volume-id $VOL_ID
+   # aws ec2 delete-volume --volume-id $VOL_ID
+    rm -rf ~/del_vol.txt
 }
 
 
@@ -65,8 +65,7 @@ case $choice in
        rm -rf ~/list.txt ~/vol.json;;
     
     2) echo "deleting"
-       delete_volume
-       rm -rf ~/del_vol.txt;;
+       delete_volume;;
     
     *) echo "Plz don't try be smart as Gulzari..." 
 esac
