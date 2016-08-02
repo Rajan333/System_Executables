@@ -7,11 +7,12 @@ CREATE_SNAPSHOT()
 {
     echo "SNAPSHOT NAME: "
     read SNAPSHOT_NAME
-    echo "SELECT AN INSTANCE: "
+    echo "SELECT AN INSTANCE No.: "
     read instance_no
     INSTANCE_NAME=${db_identifier_array[$instance_no-1]}
     echo $SNAPSHOT_NAME $INSTANCE_NAME
-    #aws rds create-db-snapshot --db-snapshot-identifier $SNAPSHOT_NAME --db-instance-identifier $INSTANCE_NAME
+    aws rds create-db-snapshot --db-snapshot-identifier $SNAPSHOT_NAME --db-instance-identifier $INSTANCE_NAME
+    echo "snapshot created"
 }
 
 # CREATE AN INSTANCE FROM A SNAPSHOT
@@ -69,7 +70,7 @@ CREATE_INSTANCE()
         18) SIZE="db.t2.large";;
     esac
         echo $SIZE
-        exit
+        
         
     aws rds restore-db-instance-from-db-snapshot --db-instance-identifier $INSTANCE_NAME --db-snapshot-identifier $SNAPSHOT_NAME --db-instace-class $SIZE
 }
