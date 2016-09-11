@@ -1,0 +1,15 @@
+#!/bin/sh
+
+while read oldrev newrev ref
+do
+    branch=$(echo $ref | cut -d/ -f3)
+    if [ "$branch" = "production" ] || [ "$branch" = "develop" ] || [ "$branch" = "master" ]; then
+        GIT_WORK_TREE=/home/ubuntu/siege git checkout -f
+        # installing requirements
+        /home/ubuntu/siege-env/bin/pip install -r /home/ubuntu/siege/requirements.txt
+        sudo supervisorctl restart cannon
+        sudo supervisorctl restart trebuchet
+    else
+        echo "Only accepts prod and master branches!"
+    fi
+done

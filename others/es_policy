@@ -1,0 +1,13 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::994187284311:user/arpit"
+      },
+      "Action": "es:*",
+      "Resource": "arn:aws:es:ap-southeast-1:994187284311:domain/arpit-elastic-search/*"
+    }
+  ]
+}
