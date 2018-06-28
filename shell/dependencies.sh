@@ -6,7 +6,6 @@
 #	+------------------------------------------------------------------+	
 											
 
-
 sudo apt-get update -y
 sudo apt-get install zsh git-core vim wget -y
 sudo apt-get install figlet -y
@@ -15,7 +14,7 @@ clear
 figlet Dependencies
 sleep 5
 
-sudo apt-get install python-pip gcc openssl jq uwsgi -y
+sudo apt-get install python2.7 python-pip build-essential python-dev gcc openssl jq uwsgi -y
 sudo pip install --upgrade pip
 sudo pip install supervisor pymongo virtualenv flask
 clear
