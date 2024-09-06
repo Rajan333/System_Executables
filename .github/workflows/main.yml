@@ -3,26 +3,15 @@ name: Example Workflow
 on:
   workflow_dispatch:
     inputs:
-      environment:
+      env:
         description: 'Select the environment'
         required: true
-        default: 'development'
+        default: 'dev'
         type: choice
         options:
-          - development
-          - staging
-          - production
-
-      version:
-        description: 'Select the version'
-        required: true
-        default: 'v1.0'
-        type: choice
-        options:
-          - v1.0
-          - v1.1
-          - v2.0
-
+          - dev
+          - stage
+          - prod
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,5 +22,36 @@ jobs:
 
       - name: Print input values
         run: |
-          echo "Environment: ${{ github.event.inputs.environment }}"
-          echo "Version: ${{ github.event.inputs.version }}"
+          echo "Environment: ${{ github.event.inputs.env }}"
+      
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Set up Kubernetes CLI
+        uses: azure/setup-kubectl@v1
+        with:
+          version: 'latest'
+
+      - name: Configure Kubernetes context
+        run: |
+          aws eks update-kubeconfig --name demo --region us-east-1
+          kubectl config set-context demo --cluster=demo
+          kubectl config use-context demo
+
+      - name: Deploy NGINX with environment and user input
+        run: |
+          # Replace placeholders in the templates
+          sed "s/{{ENV_TO_DEPLOY}}/${{ github.event.inputs.env }}/g" nginx.yaml | kubectl apply -f -
+          kubectl rollout restart deployment nginx-deployment
+          # kubectl apply -f nginx-deployment.template.yml
+          # kubectl apply -f nginx-service.template.yml
+          echo "Deployment initiated by: ${{ github.event.inputs.user }}"
+        
+      - name: Output deployment information
+        run: |
+          kubectl get all -l app=nginx
+
